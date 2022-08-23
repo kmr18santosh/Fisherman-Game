@@ -1,5 +1,5 @@
 import pygame
-
+#new comment added
 pygame.init()
 
 screen=pygame.display.set_mode((800,600))
