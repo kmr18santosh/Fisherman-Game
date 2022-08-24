@@ -16,6 +16,13 @@ playerY=500
 playerX_change=0
 playerY_change=0
 pressed=0
+
+#adding Port pier
+portImg=pygame.image.load('pier.png')
+portX=0
+portY=536
+portX_change=0
+portY_change=0
            
 #adding sharks
 sharkImg=[]
@@ -62,6 +69,9 @@ for i in range(num_of_fishes):
 
 def player(X,Y):
     screen.blit(playerImg,(X,Y))
+
+def port(X,Y):
+    screen.blit(portImg,(X,Y))
 
 def shark(X,Y,i):
     screen.blit(sharkImg[i],(X,Y))
@@ -265,7 +275,13 @@ while running:
             fishX[i] = random.randint(0, 736)
             fishY[i] = random.randint(0, 736)
 
-    
+    #MANAGING PORT PIER
+    port_arrival=fish_Collision(portX, portY, playerX, playerY)
+    if port_arrival:
+        boat_health = 20
+        boat_fuel += fish_count*3
+        fish_count=0
+
 
     playerX+=playerX_change
     playerY+=playerY_change
@@ -274,6 +290,7 @@ while running:
     show_boat_health()
     show_catch_fish()
     show_fuel()
+    port(portX,portY)
 
     pygame.display.update()
 
