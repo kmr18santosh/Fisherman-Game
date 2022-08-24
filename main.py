@@ -25,14 +25,25 @@ sharkX=[]
 sharkY=[]
 sharkX_change=[]
 sharkY_change=[]
+shark_frame_check=[]
 num_of_sharks=6
 
-for i in range(num_of_sharks):
+for i in range(num_of_sharks-1):
     sharkImg.append(pygame.image.load('shark.png'))
     sharkX.append(random.randint(0,736))
     sharkY.append(random.randint(0,400))
     sharkX_change.append(0.3)
-    sharkY_change.append(20)
+    sharkY_change.append(40)
+    shark_frame_check.append(0)
+
+#adding one Kraken
+sharkImg.append(pygame.image.load('kraken.png'))
+sharkX.append(random.randint(0,736))
+sharkY.append(random.randint(0,400))
+sharkX_change.append(0.3)
+sharkY_change.append(40)
+shark_frame_check.append(0)
+
 
 
 def shark(X,Y,i):
@@ -61,13 +72,13 @@ while running:
         if event.type==pygame.KEYDOWN:
             pressed+=1
             if event.key==pygame.K_LEFT:
-                playerX_change=-0.1                
+                playerX_change=-0.3                
             if event.key==pygame.K_RIGHT:
-                playerX_change=0.1 
+                playerX_change=0.3 
             if event.key==pygame.K_UP:
-                playerY_change=-0.1
+                playerY_change=-0.3
             if event.key==pygame.K_DOWN:
-                playerY_change=0.1  
+                playerY_change=0.3  
             if event.key==pygame.K_SPACE:
                 fire_fishnet(playerX,playerY)
 
@@ -91,7 +102,8 @@ while running:
         playerX=736
     if playerY>536:
         playerY=536 
-
+    
+    
     for i in range(num_of_sharks):
         
         #Moving the shark
@@ -99,17 +111,32 @@ while running:
         
         
         #Bounding the shraks within Frame
-        if sharkX[i]<0:
-            sharkX_change[i]=0.3
-            sharkY[i]+=sharkY_change[i]
-        if sharkX[i]>736:
-            sharkX_change[i]=-0.3
-            sharkY[i]+=sharkY_change[i]
+        
+        if shark_frame_check[i]==0:
+            if sharkX[i]<0:
+                sharkX_change[i]=0.3
+                sharkY[i]+=sharkY_change[i]
+            if sharkX[i]>736:
+                sharkX_change[i]=-0.3
+                sharkY[i]+=sharkY_change[i]
+        elif shark_frame_check[i]==1: 
+            if sharkX[i]<0:
+                sharkX_change[i]=0.3
+                sharkY[i]-=sharkY_change[i]
+            if sharkX[i]>736:
+                sharkX_change[i]=-0.3
+                sharkY[i]-=sharkY_change[i]          
+
 
         
 
         #blitting the sharks
         shark(sharkX[i],sharkY[i],i)
+        if sharkY[i]>500:
+            shark_frame_check[i]=1
+        elif sharkY[i]<0:
+            shark_frame_check[i]=0
+
     
       
     
