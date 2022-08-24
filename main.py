@@ -1,30 +1,54 @@
 import pygame
 import random
-pygame.init()
+import math
 
+pygame.init()
 screen=pygame.display.set_mode((800,600))
 pygame.display.set_caption('FisherMan')
 icon=pygame.image.load('icon.png')
 pygame.display.set_icon(icon)
 
-#adding player
+#adding player boat
 playerImg=pygame.image.load('sailing-boat.png')
 playerX=400
-playerY=480
+playerY=500
 playerX_change=0
 playerY_change=0
 pressed=0
 def player(X,Y):
     screen.blit(playerImg,(X,Y))
+           
+#adding sharks
 
-#adding shark
-sharkImg=pygame.image.load('shark.png')
-sharkX=random.randint(0,736)
-sharkY=random.randint(0,500)
-sharkx_change=0.3
-def shark(X,Y):
-    screen.blit(sharkImg,(X,Y))
+sharkImg=[]
+sharkX=[]
+sharkY=[]
+sharkX_change=[]
+sharkY_change=[]
+num_of_sharks=6
 
+for i in range(num_of_sharks):
+    sharkImg.append(pygame.image.load('shark.png'))
+    sharkX.append(random.randint(0,736))
+    sharkY.append(random.randint(0,400))
+    sharkX_change.append(0.3)
+    sharkY_change.append(20)
+
+
+def shark(X,Y,i):
+    screen.blit(sharkImg[i],(X,Y))
+
+#adding fishnet
+fishnetImg=pygame.image.load('fishnet.png')
+fishnetX=playerX
+fishnetY=playerY
+fishnetY_change=0.3
+fishnet_state='ready'
+
+def fire_fishnet(X,Y):
+    global fishnet_state
+    fishnet_state='fire'
+    screen.blit(fishnetImg,(X,Y))
 
 
 running = True
@@ -43,7 +67,11 @@ while running:
             if event.key==pygame.K_UP:
                 playerY_change=-0.1
             if event.key==pygame.K_DOWN:
-                playerY_change=0.1    
+                playerY_change=0.1  
+            if event.key==pygame.K_SPACE:
+                fire_fishnet(playerX,playerY)
+
+
         
         if event.type==pygame.KEYUP:
             pressed-=1
@@ -52,8 +80,8 @@ while running:
                 playerY_change=0
             
 
-    playerX+=playerX_change
-    playerY+=playerY_change
+    
+
     #Bounding the Boat within frame
     if playerX<0:
         playerX=0
@@ -63,18 +91,43 @@ while running:
         playerX=736
     if playerY>536:
         playerY=536 
-    #Bounding the shraks within Frame
-    if sharkX<0:
-        sharkx_change=0.3
-    if sharkX>736:
-        sharkx_change=-0.3
 
-    #Moving the shark
-    sharkX+=sharkx_change
+    for i in range(num_of_sharks):
+        
+        #Moving the shark
+        sharkX[i]+=sharkX_change[i]
+        
+        
+        #Bounding the shraks within Frame
+        if sharkX[i]<0:
+            sharkX_change[i]=0.3
+            sharkY[i]+=sharkY_change[i]
+        if sharkX[i]>736:
+            sharkX_change[i]=-0.3
+            sharkY[i]+=sharkY_change[i]
+
+        
+
+        #blitting the sharks
+        shark(sharkX[i],sharkY[i],i)
+    
+      
+    
+    
+    #firing fishnet
+    if fishnet_state=='fire':
+        fire_fishnet(playerX,fishnetY)
+        fishnetY-=fishnetY_change
+    if fishnetY<playerY-100:
+        fishnetY=playerY
+        fishnet_state='ready'
 
 
-    shark(sharkX,sharkY)
+    playerX+=playerX_change
+    playerY+=playerY_change
+    
     player(playerX,playerY)
+
 
     pygame.display.update()
 
