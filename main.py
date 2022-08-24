@@ -45,26 +45,22 @@ sharkY_change.append(40)
 shark_frame_check.append(0)
 
 
-
 def shark(X,Y,i):
     screen.blit(sharkImg[i],(X,Y))
 
-#adding fishnet
-fishnetImg=pygame.image.load('fishnet.png')
-fishnetX=playerX
-fishnetY=playerY
-fishnetY_change=0.3
-fishnet_state='ready'
 
-def fire_fishnet(X,Y):
-    global fishnet_state
-    fishnet_state='fire'
-    screen.blit(fishnetImg,(X,Y))
+def isCollision(sharkX, sharkY, boatX, boatY):
+    distance = math.sqrt(math.pow(sharkX - boatX, 2) + (math.pow(sharkY - boatY, 2)))
+    if distance < 27:
+        return True
+    else:
+        return False
+
 
 
 running = True
 while running:
-    screen.fill((27,27,199))
+    screen.fill((0,0,128))
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
             running=False
@@ -79,20 +75,16 @@ while running:
                 playerY_change=-0.3
             if event.key==pygame.K_DOWN:
                 playerY_change=0.3  
-            if event.key==pygame.K_SPACE:
-                fire_fishnet(playerX,playerY)
-
+            
 
         
         if event.type==pygame.KEYUP:
             pressed-=1
-            if pressed==0 and (event.key==pygame.K_LEFT or event.key==pygame.K_RIGHT or event.key==pygame.K_UP or event.key==pygame.K_DOWN):
+            if pressed==0 and (event.key==pygame.K_LEFT or event.key==pygame.K_RIGHT 
+            or event.key==pygame.K_UP or event.key==pygame.K_DOWN):
                 playerX_change=0
                 playerY_change=0
             
-
-    
-
     #Bounding the Boat within frame
     if playerX<0:
         playerX=0
@@ -109,26 +101,21 @@ while running:
         #Moving the shark
         sharkX[i]+=sharkX_change[i]
         
-        
         #Bounding the shraks within Frame
-        
         if shark_frame_check[i]==0:
             if sharkX[i]<0:
                 sharkX_change[i]=0.3
                 sharkY[i]+=sharkY_change[i]
-            if sharkX[i]>736:
+            if sharkX[i]>770:
                 sharkX_change[i]=-0.3
                 sharkY[i]+=sharkY_change[i]
         elif shark_frame_check[i]==1: 
             if sharkX[i]<0:
                 sharkX_change[i]=0.3
                 sharkY[i]-=sharkY_change[i]
-            if sharkX[i]>736:
+            if sharkX[i]>770:
                 sharkX_change[i]=-0.3
                 sharkY[i]-=sharkY_change[i]          
-
-
-        
 
         #blitting the sharks
         shark(sharkX[i],sharkY[i],i)
@@ -138,17 +125,6 @@ while running:
             shark_frame_check[i]=0
 
     
-      
-    
-    
-    #firing fishnet
-    if fishnet_state=='fire':
-        fire_fishnet(playerX,fishnetY)
-        fishnetY-=fishnetY_change
-    if fishnetY<playerY-100:
-        fishnetY=playerY
-        fishnet_state='ready'
-
 
     playerX+=playerX_change
     playerY+=playerY_change
