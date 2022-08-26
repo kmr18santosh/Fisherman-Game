@@ -1,6 +1,7 @@
 import pygame
 import random
 import math
+from pygame import mixer
 
 pygame.init()
 screen=pygame.display.set_mode((800,600))
@@ -8,6 +9,10 @@ pygame.display.set_caption('FisherMan')
 icon=pygame.image.load('icon.png')
 pygame.display.set_icon(icon)
 background = pygame.image.load('background.png')
+
+# Sound
+mixer.music.load("background.mp3")
+mixer.music.play(-1)
 
 #adding player boat
 playerImg=pygame.image.load('sailing-boat.png')
@@ -200,7 +205,11 @@ while running:
                 sharkY[j] = 2000
             for j in range(num_of_fishes):
                 fishY[j] = 2000    
+        
             game_over_text()
+            gameover_sound= mixer.Sound("gameover.wav")
+            gameover_sound.play(1)
+            
             break
         
         #Moving the shark
@@ -234,6 +243,8 @@ while running:
                 boat_health -= 1
             sharkX[i] = random.randint(0, 736)
             sharkY[i] = random.randint(50, 400)
+            sharkhit = mixer.Sound("sharkhit.wav")
+            sharkhit.play()
             
     #MANAGING FISHES
     for i in range(num_of_fishes):
@@ -267,6 +278,8 @@ while running:
             fish_count += 1
             fishX[i] = random.randint(0, 736)
             fishY[i] = random.randint(50,400)
+            fishhit = mixer.Sound("fishhit.wav")
+            fishhit.play()
 
     #MANAGING PORT PIER
     port_arrival=fish_Collision(portX, portY, playerX, playerY)
@@ -275,6 +288,8 @@ while running:
         boat_fuel += fish_count*3
         high_score=max(high_score,fish_count)
         fish_count=0
+        porthit= mixer.Sound("porthit.wav")
+        porthit.play()
     
     show_high_score(high_score)
 
