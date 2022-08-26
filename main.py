@@ -8,6 +8,7 @@ screen=pygame.display.set_mode((800,600))
 pygame.display.set_caption('FisherMan')
 icon=pygame.image.load('icon.png')
 pygame.display.set_icon(icon)
+background = pygame.image.load('background.png')
 
 #adding player boat
 playerImg=pygame.image.load('sailing-boat.png')
@@ -30,24 +31,23 @@ sharkX=[]
 sharkY=[]
 sharkX_change=[]
 sharkY_change=[]
-shark_frame_check=[]
-num_of_sharks=6
+num_of_sharks=5
 
 for i in range(num_of_sharks-1):
     sharkImg.append(pygame.image.load('shark.png'))
     sharkX.append(random.randint(0,736))
-    sharkY.append(random.randint(0,400))
-    sharkX_change.append(0.3)
-    sharkY_change.append(40)
-    shark_frame_check.append(0)
+    sharkY.append(random.randint(50,100))
+    sharkX_change.append(4)
+    sharkY_change.append(10)
+   
 
 #adding one Kraken
 sharkImg.append(pygame.image.load('kraken.png'))
 sharkX.append(random.randint(0,736))
-sharkY.append(random.randint(0,400))
-sharkX_change.append(0.6)
-sharkY_change.append(40)
-shark_frame_check.append(0)
+sharkY.append(random.randint(50,100))
+sharkX_change.append(4)
+sharkY_change.append(20)
+
 
 #adding fish
 fishImg=[]
@@ -55,16 +55,17 @@ fishX=[]
 fishY=[]
 fishX_change=[]
 fishY_change=[]
-fish_frame_check=[]
+fish_direction=[]
 num_of_fishes=5
 
 for i in range(num_of_fishes):
     fishImg.append(pygame.image.load('fishR.png'))
     fishX.append(random.randint(0,736))
-    fishY.append(random.randint(0,400))
-    fishX_change.append(0.1)
+    fishY.append(random.randint(50,400))
+    fishX_change.append(2)
     fishY_change.append(20)
-    fish_frame_check.append(0)
+    fish_direction.append(0)
+
 
 
 def player(X,Y):
@@ -78,7 +79,7 @@ def shark(X,Y,i):
 
 direction=0
 def fish(X,Y,i):
-    if direction%2==0:
+    if fish_direction[i]%2==0:
         fishImg[i]=(pygame.image.load('fishR.png'))
     else:
         fishImg[i]=(pygame.image.load('fishL.png'))
@@ -86,15 +87,15 @@ def fish(X,Y,i):
 
 
 def shark_Collision(sharkX, sharkY, boatX, boatY):
-    gap = math.sqrt(math.pow(sharkX - boatX, 2) + (math.pow(sharkY - boatY, 2)))
+    gap = math.sqrt(math.pow(sharkX - boatX+16, 2) + (math.pow(sharkY - boatY+16, 2)))
     if gap < 27:
         return True
     else:
         return False
 
-def fish_Collision(sharkX, sharkY, boatX, boatY):
-    gap = math.sqrt(math.pow(sharkX - boatX, 2) + (math.pow(sharkY - boatY, 2)))
-    if gap < 35:
+def fish_Collision(fishX, fishY, boatX, boatY):
+    gap = math.sqrt(math.pow(fishX - boatX+16, 2) + (math.pow(fishY - boatY+16, 2)))
+    if gap < 50:
         return True
     else:
         return False
@@ -105,8 +106,10 @@ def disatnce(oldX, oldY, newX, newY):
 
 #PLAYER PARAMETERS
 boat_health = 20
-boat_fuel=30
+boat_fuel=100
 fish_count=0
+saved_count=0
+high_score=0
 font = pygame.font.Font('freesansbold.ttf', 18)
 
 
@@ -131,6 +134,11 @@ def show_fuel():
         fuel_text=font.render("Boat Fuel:" + str(boat_fuel),True,(255,255,255))
     screen.blit(fuel_text,(600,10))
 
+def show_high_score(high_score):
+    high_score_text=font.render("High Score: " + str(high_score),True,(255,255,255))
+    screen.blit(high_score_text,(600,40))
+
+
 #Boat Running Parameteres
 startX=playerX
 startY=playerY
@@ -140,7 +148,7 @@ endY=0
 
 running = True
 while running:
-    screen.fill((6,11,84))
+    screen.blit(background, (0, 0))
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
             running=False
@@ -150,13 +158,13 @@ while running:
             startX=playerX
             startY=playerY
             if event.key==pygame.K_LEFT:
-                playerX_change=-0.3                
+                playerX_change=-2               
             if event.key==pygame.K_RIGHT:
-                playerX_change=0.3 
+                playerX_change=2 
             if event.key==pygame.K_UP:
-                playerY_change=-0.3
+                playerY_change=-2
             if event.key==pygame.K_DOWN:
-                playerY_change=0.3  
+                playerY_change=2
             
 
         
@@ -191,6 +199,8 @@ while running:
         if boat_health < 0 or boat_fuel<0:
             for j in range(num_of_sharks):
                 sharkY[j] = 2000
+            for j in range(num_of_fishes):
+                fishY[j] = 2000    
             game_over_text()
             break
         
@@ -198,27 +208,21 @@ while running:
         sharkX[i]+=sharkX_change[i]
         
         #Bounding the shraks within Frame
-        if shark_frame_check[i]==0:
-            if sharkX[i]<0:
-                sharkX_change[i]=0.3
-                sharkY[i]+=sharkY_change[i]
-            if sharkX[i]>770:
-                sharkX_change[i]=-0.3
-                sharkY[i]+=sharkY_change[i]
-        elif shark_frame_check[i]==1: 
-            if sharkX[i]<0:
-                sharkX_change[i]=0.3
-                sharkY[i]-=sharkY_change[i]
-            if sharkX[i]>770:
-                sharkX_change[i]=-0.3
-                sharkY[i]-=sharkY_change[i]          
-
+        
+        if sharkX[i]<0:
+            sharkX_change[i]=4
+            sharkY[i]+=sharkY_change[i]
+        if sharkX[i]>736:
+            sharkX_change[i]=-4
+            sharkY[i]+=sharkY_change[i]
+        if sharkY[i]>500:
+            sharkX[i]=random.randint(0,736)
+            sharkY[i]=random.randint(50,100)
+        
         #blitting the sharks
         shark(sharkX[i],sharkY[i],i)
-        if sharkY[i]>500:
-            shark_frame_check[i]=1
-        elif sharkY[i]<0:
-            shark_frame_check[i]=0
+        
+        
 
         #checking collision
         collision = shark_Collision(sharkX[i], sharkY[i], playerX, playerY)
@@ -230,7 +234,7 @@ while running:
             else:
                 boat_health -= 1
             sharkX[i] = random.randint(0, 736)
-            sharkY[i] = random.randint(0, 736)
+            sharkY[i] = random.randint(50, 400)
             
     #MANAGING FISHES
     for i in range(num_of_fishes):
@@ -239,32 +243,22 @@ while running:
         fishX[i]+=fishX_change[i]
         
         #Bounding the fishes within Frame
-        if fish_frame_check[i]==0:
-            if fishX[i]<0:
-                fishX_change[i]=0.1
-                fishY[i]+=fishY_change[i]
-                direction+=1
-            if fishX[i]>770:
-                fishX_change[i]=-0.1
-                fishY[i]+=fishY_change[i]
-                direction+=1
-        elif fish_frame_check[i]==1: 
-            if fishX[i]<0:
-                fishX_change[i]=0.1
-                fishY[i]-=fishY_change[i]
-                direction+=1
-            if fishX[i]>770:
-                fishX_change[i]=-0.1
-                fishY[i]-=fishY_change[i] 
-                direction+=1
+        if fishX[i]<0:
+            fishX_change[i]=2
+            fishY[i]+=fishY_change[i]
+            fish_direction[i]+=1
+        if fishX[i]>770:
+            fishX_change[i]=-2
+            fishY[i]+=fishY_change[i]
+            fish_direction[i]+=1
+        if fishY[i]>500:
+            fishX[i]=random.randint(0,736)
+            fishY[i]=random.randint(50,100)
+        
 
         #blitting the fishes
         fish(fishX[i],fishY[i],i)
-        if fishY[i]>500:
-            shark_frame_check[i]=1
-        elif fishY[i]<0:
-            shark_frame_check[i]=0
-
+       
 
         #checking collision
         collision = fish_Collision(fishX[i], fishY[i], playerX, playerY)
@@ -273,14 +267,17 @@ while running:
             #explosionSound.play()
             fish_count += 1
             fishX[i] = random.randint(0, 736)
-            fishY[i] = random.randint(0, 736)
+            fishY[i] = random.randint(50,400)
 
     #MANAGING PORT PIER
     port_arrival=fish_Collision(portX, portY, playerX, playerY)
     if port_arrival:
         boat_health = 20
         boat_fuel += fish_count*3
+        high_score=max(high_score,fish_count)
         fish_count=0
+    
+    show_high_score(high_score)
 
 
     playerX+=playerX_change
