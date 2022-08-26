@@ -52,7 +52,6 @@ sharkY.append(random.randint(50,400))
 sharkX_change.append(4)
 sharkY_change.append(20)
 
-
 #adding fish
 fishImg=[]
 fishX=[]
