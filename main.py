@@ -90,15 +90,15 @@ def fish(X,Y,i):
 
 
 def shark_Collision(sharkX, sharkY, boatX, boatY):
-    gap = math.sqrt(math.pow(sharkX - boatX+16, 2) + (math.pow(sharkY - boatY+16, 2)))
+    gap = math.sqrt(math.pow(sharkX - boatX, 2) + (math.pow(sharkY - boatY, 2)))
     if gap < 27:
         return True
     else:
         return False
 
 def fish_Collision(fishX, fishY, boatX, boatY):
-    gap = math.sqrt(math.pow(fishX - boatX+16, 2) + (math.pow(fishY - boatY+16, 2)))
-    if gap < 50:
+    gap = math.sqrt(math.pow(fishX - boatX, 2) + (math.pow(fishY - boatY, 2)))
+    if gap < 60:
         return True
     else:
         return False
@@ -161,13 +161,13 @@ while running:
             startX=playerX
             startY=playerY
             if event.key==pygame.K_LEFT:
-                playerX_change=-2               
+                playerX_change=-3               
             if event.key==pygame.K_RIGHT:
-                playerX_change=2 
+                playerX_change=3
             if event.key==pygame.K_UP:
-                playerY_change=-2
+                playerY_change=-3
             if event.key==pygame.K_DOWN:
-                playerY_change=2
+                playerY_change=3
             
 
         
@@ -198,18 +198,7 @@ while running:
     #MANAGING SHARKS
     for i in range(num_of_sharks):
 
-         # Game Over
-        if boat_health < 0 or boat_fuel<0:
-            for j in range(num_of_sharks):
-                sharkY[j] = 2000
-            for j in range(num_of_fishes):
-                fishY[j] = 2000    
-        
-            game_over_text()
-            gameover_sound= mixer.Sound("gameover.wav")
-            gameover_sound.play(1)
-            
-            break
+
         
         #Moving the shark
         sharkX[i]+=sharkX_change[i]
@@ -247,6 +236,19 @@ while running:
             
     #MANAGING FISHES
     for i in range(num_of_fishes):
+
+        # Game Over
+        if boat_health < 0 or boat_fuel<0:
+            for j in range(num_of_sharks):
+                sharkY[j] = 2000
+            for j in range(num_of_fishes):
+                fishY[j] = 2000  
+            playerY=200  
+
+            game_over_text()
+            gameover_sound= mixer.Sound("gameover.wav")
+            gameover_sound.play(1)
+            break
 
         #Moving the fishes
         fishX[i]+=fishX_change[i]
@@ -301,6 +303,8 @@ while running:
     show_catch_fish()
     show_fuel()
     port(portX,portY)
+
+
 
     pygame.display.update()
 
