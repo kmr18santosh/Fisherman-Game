@@ -1,4 +1,3 @@
-from gc import DEBUG_SAVEALL
 import pygame
 import random
 import math
@@ -31,12 +30,12 @@ sharkX=[]
 sharkY=[]
 sharkX_change=[]
 sharkY_change=[]
-num_of_sharks=5
+num_of_sharks=7
 
 for i in range(num_of_sharks-1):
     sharkImg.append(pygame.image.load('shark.png'))
     sharkX.append(random.randint(0,736))
-    sharkY.append(random.randint(50,100))
+    sharkY.append(random.randint(50,400))
     sharkX_change.append(4)
     sharkY_change.append(10)
    
@@ -44,7 +43,7 @@ for i in range(num_of_sharks-1):
 #adding one Kraken
 sharkImg.append(pygame.image.load('kraken.png'))
 sharkX.append(random.randint(0,736))
-sharkY.append(random.randint(50,100))
+sharkY.append(random.randint(50,400))
 sharkX_change.append(4)
 sharkY_change.append(20)
 
