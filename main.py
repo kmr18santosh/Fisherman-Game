@@ -151,6 +151,9 @@ endY=0
 
 running = True
 while running:
+    startX=playerX
+    startY=playerY
+
     screen.blit(background, (0, 0))
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
@@ -158,8 +161,7 @@ while running:
 
         if event.type==pygame.KEYDOWN:
             pressed+=1
-            startX=playerX
-            startY=playerY
+
             if event.key==pygame.K_LEFT:
                 playerX_change=-3               
             if event.key==pygame.K_RIGHT:
@@ -177,11 +179,7 @@ while running:
             or event.key==pygame.K_UP or event.key==pygame.K_DOWN):
                 playerX_change=0
                 playerY_change=0
-            endX=playerX
-            endY=playerY
 
-            travel=disatnce(startX, startY, endX, endY)
-            boat_fuel -= travel/50
 
 
 
@@ -297,6 +295,12 @@ while running:
 
     playerX+=playerX_change
     playerY+=playerY_change
+
+    endX=playerX
+    endY=playerY
+
+    travel=disatnce(startX, startY, endX, endY)
+    boat_fuel -= travel/50
     
     player(playerX,playerY)
     show_boat_health()
