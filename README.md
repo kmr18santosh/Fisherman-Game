@@ -1,3 +1,7 @@
+Dependencies: Pygame package
+
+
+
 To play the fisher-man game, run the main.py file.
 
 command to run it:
@@ -5,6 +9,9 @@ python3 main.py
 
 Game controls:
 arrow keys: up, down,left,right
+
+
+
 
 instructions:
 
