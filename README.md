@@ -1,3 +1,4 @@
+![Screenshot from 2022-10-14 03-29-01](https://user-images.githubusercontent.com/20890105/195718834-31a33595-e8cf-4e77-8906-3091133182ab.png)
 Dependencies: Pygame package
 
 
@@ -9,9 +10,6 @@ python3 main.py
 
 Game controls:
 arrow keys: up, down,left,right
-
-![Screenshot from 2022-10-14 03-29-01](https://user-images.githubusercontent.com/20890105/195718834-31a33595-e8cf-4e77-8906-3091133182ab.png)
-
 
 
 
